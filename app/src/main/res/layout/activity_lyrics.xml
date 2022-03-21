@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ScrollView
+        android:id="@+id/lyrics_scroll_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10sp"
+        android:layout_above="@id/set_layout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/lyrics_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:padding="4dp"
+                android:textIsSelectable="true"
+                android:text="" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/set_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+
+    <LinearLayout
+        android:id="@+id/settings_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:id="@+id/second_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                android:text="Song Title" />
+
+            <EditText
+                android:id="@+id/song_title_input"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:hint="Input Text"
+                android:inputType="text"
+                />
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:text="Search" />
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:id="@+id/radioGroup">
+
+            <RadioButton
+                android:id="@+id/radioChinese"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chinese"
+                android:checked="false"/>
+
+            <RadioButton
+                android:id="@+id/radioJapanese"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Japanese"
+                android:checked="true" />
+            <RadioButton
+                android:id="@+id/radioWestern"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Western"
+                android:checked="false"/>
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/song_number_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                android:text="Song No." />
+            <EditText
+                android:id="@+id/song_number_input"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:hint="1"
+                android:inputType="number" />
+            <Button
+                android:id="@+id/btn_get"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:textAllCaps="false"
+                android:text="Get" />
+        </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/third_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:weightSum="7">
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/link_input"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="5"
+                android:layout_margin="3dp"
+                android:hint="Input Link"
+                android:inputType="text" />
+            <Button
+                android:id="@+id/btn_grab"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAllCaps="false"
+                android:layout_margin="3dp"
+                android:layout_weight="2"
+                android:text="Grab" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
