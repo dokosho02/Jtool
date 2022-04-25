@@ -4,7 +4,7 @@
 
 a simple lyrics scrapping app for Android platform
 
-now [Chinese](http://mojim.com/twzlistF.htm) (traditional Chinese character only) and [Japanese](https://www.uta-net.com/) lyrics are supported.
+Now [Chinese](http://mojim.com/twzlistF.htm) (traditional Chinese character only) and [Japanese](https://www.uta-net.com/) lyrics are supported.
 
 ## Download
 
