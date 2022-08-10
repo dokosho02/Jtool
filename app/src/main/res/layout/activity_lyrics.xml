@@ -81,20 +81,20 @@
                 android:id="@+id/radioChinese"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chinese"
+                android:text="Mojim"
                 android:checked="false"/>
 
             <RadioButton
                 android:id="@+id/radioJapanese"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Japanese"
+                android:text="UtaNet"
                 android:checked="true" />
             <RadioButton
                 android:id="@+id/radioWestern"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Western"
+                android:text="Genius"
                 android:checked="false"/>
         </RadioGroup>
 

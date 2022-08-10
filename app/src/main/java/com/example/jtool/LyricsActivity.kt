@@ -54,7 +54,7 @@ class LyricsActivity : AppCompatActivity() {
     }
 
 
-    fun getLang() {
+    private fun getLang() {
         val intSelectButton: Int = radioGroup.checkedRadioButtonId
         radioButton = findViewById(intSelectButton)
         lang    = radioButton.text.toString()
@@ -63,7 +63,6 @@ class LyricsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
 
         searchBtn.setOnClickListener {
             getLang()
@@ -127,8 +126,8 @@ class LyricsActivity : AppCompatActivity() {
         var songsInfoText = ""
         when (lang) {
 
-            "Chinese" -> {
-                val song = ChineseSingle()
+            "Mojim" -> {
+                val song = MojimSingle()
                 songsInfoList = song.searchSongs(keyword)
                 songsInfoList.reverse()
                 for (i in songsInfoList.indices){
@@ -139,8 +138,8 @@ class LyricsActivity : AppCompatActivity() {
                 }
             }
 
-            "Japanese" -> {
-                val song = JapaneseSingle()
+            "UtaNet" -> {
+                val song = UtaNetSingle()
                 songsInfoList =  song.searchSongs(keyword)
                 for (item in songsInfoList){
                     val (count, songTitle, artist, lyricsInfo, _) = item
@@ -158,8 +157,8 @@ class LyricsActivity : AppCompatActivity() {
         var lyricInfo = ""
         var selectSongNumber = ""
         when (lang) {
-            "Chinese" -> {
-                val song = ChineseSingle()
+            "Mojim" -> {
+                val song = MojimSingle()
                 if (songLink=="") {
                     for (i in songsInfoList.indices) {
                         val item = songsInfoList[i]
@@ -178,8 +177,8 @@ class LyricsActivity : AppCompatActivity() {
                 lyricInfo = "# ${lyricsInfo[0]}\n## Lyrics\n${lyricsInfo[1]}\n\n- Performed by ${lyricsInfo[2]}\n- Lyrics by ${lyricsInfo[3]}\n- Composed by ${lyricsInfo[4]}\n- Released on ${lyricsInfo[5]}\n- Numbered as ${lyricsInfo[6]}\n- Produced by ${lyricsInfo[7]}"
             }
 
-            "Japanese" -> {
-                val song = JapaneseSingle()
+            "UtaNet" -> {
+                val song = UtaNetSingle()
                 if (songLink=="") {
                     for (item in songsInfoList) {
                         val (count, _, _, _, songNumber) = item
