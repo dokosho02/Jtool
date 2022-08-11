@@ -20,7 +20,7 @@ open class Single {
     open var lyrics = letraStrucuture
 
     var infoList = arrayListOf<Array<Any>>()
-    lateinit var eleList: Array<Any>
+    lateinit var elementList: Array<Any>
 
     fun ShowInfo(){
         val s = 'S'.toString()
@@ -34,5 +34,3 @@ open class Single {
     }
 
 }
-
-// https://stackoverflow.com/questions/58247830/how-to-store-2d-array-in-android-shared-preference-in-kotlin

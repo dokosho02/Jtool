@@ -1,7 +1,5 @@
 package com.example.jtool
 
-import android.annotation.SuppressLint
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
@@ -9,9 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import kotlinx.coroutines.*
 import java.io.IOException
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 
 class LyricsActivity : AppCompatActivity() {
 
@@ -24,7 +19,7 @@ class LyricsActivity : AppCompatActivity() {
     private lateinit var searchBtn: Button
     lateinit var radioGroup: RadioGroup
     lateinit var radioButton: RadioButton
-    lateinit var lang: String
+    lateinit var engine: String
     lateinit var keyword: String
     lateinit var getBtn: Button
     lateinit var grabBtn: Button
@@ -54,32 +49,36 @@ class LyricsActivity : AppCompatActivity() {
     }
 
 
-    private fun getLang() {
+    private fun getEngine() {
         val intSelectButton: Int = radioGroup.checkedRadioButtonId
         radioButton = findViewById(intSelectButton)
-        lang    = radioButton.text.toString()
-        Log.v("Language", lang)
+        engine    = radioButton.text.toString()
+        Log.v("engine", engine)
     }
 
     override fun onResume() {
         super.onResume()
 
         searchBtn.setOnClickListener {
-            getLang()
+            getEngine()
             keyword = input.text.toString()
 
-            scope.launch { searchInfo() }
+            scope.launch {
+                searchInfo()
+            }
         }
 
         getBtn.setOnClickListener {
             songLink=""
             number = inputNo.text.toString().toInt()
 
-            scope.launch { getLyrics() }
+            scope.launch {
+                getLyrics()
+            }
         }
 
         grabBtn.setOnClickListener {
-            getLang()
+            getEngine()
             songLink = linkInput.text.toString()
             scope.launch { getLyrics() }
         }
@@ -93,7 +92,7 @@ class LyricsActivity : AppCompatActivity() {
     private suspend fun searchInfo() {
         var info = ""
         try {
-                info = getSongsInfo(keyword, lang)
+                info = getSongsInfo(keyword, engine)
 
                 withContext(Dispatchers.Main) {
                     lyricsText.text = info
@@ -112,7 +111,7 @@ class LyricsActivity : AppCompatActivity() {
     private suspend fun getLyrics() {
         var info = ""
         try {
-            info = getLetra(number, lang)
+            info = getLetra(number, engine)
 
             withContext(Dispatchers.Main) {
                 lyricsText.text = info
@@ -122,9 +121,9 @@ class LyricsActivity : AppCompatActivity() {
     }
 
 
-    private fun getSongsInfo(keyword: String, lang:String): String {
+    private fun getSongsInfo(keyword: String, engine:String): String {
         var songsInfoText = ""
-        when (lang) {
+        when (engine) {
 
             "Mojim" -> {
                 val song = MojimSingle()
@@ -152,11 +151,10 @@ class LyricsActivity : AppCompatActivity() {
         return songsInfoText
     }
 
-
-    private fun getLetra(number: Int, lang: String): String {
+    private fun getLetra(number: Int, engine: String): String {
         var lyricInfo = ""
         var selectSongNumber = ""
-        when (lang) {
+        when (engine) {
             "Mojim" -> {
                 val song = MojimSingle()
                 if (songLink=="") {

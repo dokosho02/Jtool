@@ -16,24 +16,24 @@ class UtaNetSingle : Single() {
 
         println(resultTable)
 
-        for ( i in resultTable.indices.drop(1) ) {
-            val songTitle  = resultTable[i].select("span[class=*songlist-title]").text()
-            val artist     = resultTable[i].select("a[href=*artist*]").text()
-            val lyricsInfo = resultTable[i].select("td").last()!!.text()
-            val songNumber = resultTable[i].select("a[href=*song*]").attr("href")
-
+        for ( i in resultTable.indices.drop(1).dropLast(1) ) {
             val count = i.toString()
-            eleList = arrayOf(count, songTitle, artist, lyricsInfo, songNumber )
-            infoList.add( eleList )
+            val songTitle  = resultTable[i].select("span[class*=songlist-title]").text()
+            val artist     = resultTable[i].select("a[href*=artist]").text()
+            val lyricsInfo = resultTable[i].select("span[class*=pc-utaidashi]").text().split(graphicSpace)[0]
+            val songLink = resultTable[i].select("a[href*=song]").attr("href")
+
+            elementList = arrayOf(count, songTitle, artist, lyricsInfo, songLink )
+            infoList.add( elementList )
         }
         return infoList
     }
 
-    fun scrapLyrics(songNumber:String): Array<Any> {
-//        number = songNumber
+    fun scrapLyrics(songRelativeLink:String): Array<Any> {
+        number = songRelativeLink.drop(1).dropLast(1).split('/')[1]
         val graphicSpace = "\u3000"
 
-        val songLink = "${searchEngine}${songNumber}"  //
+        val songLink = "${searchEngine}${songRelativeLink}"  //
         Log.v("Scrap", songLink)
         val document = Jsoup.connect(songLink).get()
 
@@ -68,13 +68,6 @@ class UtaNetSingle : Single() {
 
                     } catch (e: IOException){}
                 }
-                item.contains("商品番号") -> {
-                    try {
-                        number = item.drop(5).dropLast(1)
-                        Log.v("Number", number)
-
-                    } catch (e: IOException){ }
-                }
                 else -> {
                     try {
                         studio = item.dropLast(1)
@@ -85,5 +78,3 @@ class UtaNetSingle : Single() {
         return arrayOf( title, "${lyrics}${temp}", singers, lyricists, composers, releaseDate, number, studio )
     }
 }
-
-// https://stackoverflow.com/questions/58247830/how-to-store-2d-array-in-android-shared-preference-in-kotlin

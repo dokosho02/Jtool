@@ -22,8 +22,8 @@ class GeniusSingle: Single() {
             val songLink = resultTable[i].select("span[class=mxsh_ss4]").select("a[href]").attr("href")
             val releaseDate = resultTable[i].select("span[class=mxsh_ss5]").text()
 
-            eleList = arrayOf(count, songTitle, artist, albumInfo, releaseDate, songLink)
-            infoList.add(eleList)
+            elementList = arrayOf(count, songTitle, artist, albumInfo, releaseDate, songLink)
+            infoList.add(elementList)
         }
         return infoList
     }
