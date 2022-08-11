@@ -8,7 +8,7 @@ class UtaNetSingle : Single() {
     override var searchEngine = "https://www.uta-net.com"
     private val aSelect = "2"
 
-    fun searchSongs(titleKeyword:String): ArrayList<Array<Any>> {
+    fun searchSong(titleKeyword:String): ArrayList<Array<Any>> {
         val searchLink = "${searchEngine}/search/?Aselect=${aSelect}&Keyword=${titleKeyword}&Bselect=1&x=0&y=0"
         // https://www.uta-net.com/search/?Keyword=%E7%BF%BC%E3%82%92%E5%BA%83%E3%81%92%E3%81%A6&Aselect=2&Bselect=3
         val document = Jsoup.connect(searchLink).get()
@@ -29,7 +29,7 @@ class UtaNetSingle : Single() {
         return infoList
     }
 
-    fun scrapLyrics(songRelativeLink:String): Array<Any> {
+    fun scrapeLyrics(songRelativeLink:String): Array<Any> {
         number = songRelativeLink.drop(1).dropLast(1).split('/')[1]
         val graphicSpace = "\u3000"
 

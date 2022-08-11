@@ -9,7 +9,7 @@ val graphicSpace = "\u3000"
 class MojimSingle: Single() {
     override var searchEngine = "https://mojim.com"
     // ---------------------------------
-    fun searchSongs(titleKeyword:String) : ArrayList<Array<Any>> {
+    fun searchSong(titleKeyword:String) : ArrayList<Array<Any>> {
         // https://mojim.com/%E4%B8%8D%E8%83%BD%E6%94%BE%E6%89%8B.html?t3
         val searchLink = "${searchEngine}/${titleKeyword}.html?t3"
         val document = Jsoup.connect(searchLink).get()
@@ -31,7 +31,7 @@ class MojimSingle: Single() {
         return infoList
     }
     // ---------------------------------
-    fun scrapLyrics(songRelativeLink: String) : Array<Any> {
+    fun scrapeLyrics(songRelativeLink: String) : Array<Any> {
         val songLink = "${searchEngine}${songRelativeLink}"    // https://mojim.com/twy100019x21x8.htm
         Log.v("Chinese Link", songLink)
         val document = Jsoup.connect(songLink).get()

@@ -127,25 +127,34 @@ class LyricsActivity : AppCompatActivity() {
 
             "Mojim" -> {
                 val song = MojimSingle()
-                songsInfoList = song.searchSongs(keyword)
+                songsInfoList = song.searchSong(keyword)
                 songsInfoList.reverse()
                 for (i in songsInfoList.indices){
                     val item = songsInfoList[i]
                     val count = i+1
-                    // count, songTitle, artist, albumInfo, releaseDate, songLink
+                    // count, songTitle, artist, albumInfo, releaseDate
                     songsInfoText += "[${count}] ${item[1]}\n        by ${item[2]}\n      on ${item[4]}\n    from ${item[3]}\n"
                 }
             }
 
             "UtaNet" -> {
                 val song = UtaNetSingle()
-                songsInfoList =  song.searchSongs(keyword)
+                songsInfoList =  song.searchSong(keyword)
                 for (item in songsInfoList){
                     val (count, songTitle, artist, lyricsInfo, _) = item
                     songsInfoText += "[${count}] ${songTitle}\n      by ${artist}\n     Lyrics: ${lyricsInfo}\n"
                 }
             }
-
+            "Genius" -> {
+                val song = GeniusSingle()
+                songsInfoList = song.searchSong(keyword)
+                for (i in songsInfoList.indices){
+                    val item = songsInfoList[i]
+                    val count = i+1
+                    // count, songTitle, artist, releaseDate
+                    songsInfoText += "[${count}] ${item[1]}\n        by ${item[2]}\n      on ${item[3]}\n"
+                }
+            }
 
         }
         return songsInfoText
@@ -171,8 +180,26 @@ class LyricsActivity : AppCompatActivity() {
                 else {
                     selectSongNumber = songLink.replace(song.searchEngine,"")
                 }
-                lyricsInfo = song.scrapLyrics(selectSongNumber)
+                lyricsInfo = song.scrapeLyrics(selectSongNumber)
                 lyricInfo = "# ${lyricsInfo[0]}\n## Lyrics\n${lyricsInfo[1]}\n\n- Performed by ${lyricsInfo[2]}\n- Lyrics by ${lyricsInfo[3]}\n- Composed by ${lyricsInfo[4]}\n- Released on ${lyricsInfo[5]}\n- Numbered as ${lyricsInfo[6]}\n- Produced by ${lyricsInfo[7]}"
+            }
+            "Genius" -> {
+                val song = GeniusSingle()
+                if (songLink=="") {
+                    for (i in songsInfoList.indices) {
+                        val item = songsInfoList[i]
+                        val count = i + 1
+                        val songNumber = item[4]
+                        if (count.toString() == number.toString()) {
+                            selectSongNumber = songNumber.toString()
+                        }
+                    }
+                }
+                else {
+                    selectSongNumber = songLink.replace(song.searchEngine,"")
+                }
+                lyricsInfo = song.scrapeLyrics(selectSongNumber)
+                lyricInfo = "# ${lyricsInfo[0]}\n## Lyrics\n${lyricsInfo[1]}\n\n- Performed by ${lyricsInfo[2]}\n- Lyrics by ${lyricsInfo[3]}\n- Composed by ${lyricsInfo[4]}\n- Released on ${lyricsInfo[5]}\n- Numbered as\n- Produced by ${lyricsInfo[7]}"
             }
 
             "UtaNet" -> {
@@ -189,7 +216,7 @@ class LyricsActivity : AppCompatActivity() {
                 else {
                     selectSongNumber = songLink.replace(song.searchEngine, "")
                 }
-                lyricsInfo = song.scrapLyrics(selectSongNumber)
+                lyricsInfo = song.scrapeLyrics(selectSongNumber)
                 val kashi = lyricsInfo[1].toString()
                         .replace("<br>\n", "\n")
                         .replace("<br>", "")

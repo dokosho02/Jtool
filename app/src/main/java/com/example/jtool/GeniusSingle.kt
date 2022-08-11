@@ -2,113 +2,128 @@ package com.example.jtool
 
 import android.util.Log
 import org.jsoup.Jsoup
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
+import java.net.URLEncoder
+
+
+
+
+fun processReStr(str: String): String {
+    var str2 = str.split(":")[1].drop(1).dropLast(2)
+    if (str2 == "ul") {str2 = "null"}
+    return str2
+}
 
 class GeniusSingle: Single() {
-    override var searchEngine = "https://mojim.com"
+    override var searchEngine = "https://genius.com" //"https://genius.com"
+    private val apiURL = "https://api.genius.com"
+    private val client_access_token = "2srIef_PLP3IJmAUhIU6E8bTsD1iJcHjXfqwviG2CsNQQEV_1lYa9S2yX4F9J8yJ"
 
-    fun searchSongs(titleKeyword:String) : ArrayList<Array<Any>> {
-        // https://mojim.com/%E4%B8%8D%E8%83%BD%E6%94%BE%E6%89%8B.html?t3
-        val searchLink = "${searchEngine}/${titleKeyword}.html?t3"
-        val document = Jsoup.connect(searchLink).get()
-        val resultTable = document.select("dd")
+    fun searchSong(titleKeyword:String) : ArrayList<Array<Any>> {
+        val encodeKeyword = URLEncoder.encode(titleKeyword, "utf-8")
+        val queryURL = "${apiURL}/search?q=${encodeKeyword}"
+        println(queryURL)
 
-        for ( i in resultTable.indices.drop(1) ) {
-            if (resultTable[i].toString().contains("<p")){continue}
+        val response: String = getHttpsResponse(queryURL, client_access_token)
 
-            val count = resultTable[i].select("span[class=mxsh_ss1]").text()
-            val artist = resultTable[i].select("span[class=mxsh_ss2]").text()
-            val albumInfo = resultTable[i].select("span[class=mxsh_ss3]").text()
-            val songTitle = resultTable[i].select("span[class=mxsh_ss4]").text().split(".")[1]
-            val songLink = resultTable[i].select("span[class=mxsh_ss4]").select("a[href]").attr("href")
-            val releaseDate = resultTable[i].select("span[class=mxsh_ss5]").text()
+        val pathList:  MutableList<String> = mutableListOf()
+        val titleList: MutableList<String> = mutableListOf()
+        val artiList:  MutableList<String> = mutableListOf()
+        val dateList:  MutableList<String> = mutableListOf()
 
-            elementList = arrayOf(count, songTitle, artist, albumInfo, releaseDate, songLink)
+
+        val pathRe = "\"path\"(.*?)\",".toRegex()  //
+        val pathSearches = pathRe.findAll(response)
+        pathSearches.forEach {
+            println(it.value)
+            pathList.add( processReStr(it.value) )
+        }
+
+        val titleRe = "\"title\"(.*?)\",".toRegex()  //
+        val titleSearches = titleRe.findAll(response)
+        titleSearches.forEach {
+            println(it.value)
+            titleList.add( processReStr(it.value) )
+        }
+
+        val artiRe = "\"artist_names\"(.*?)\",".toRegex()  //
+        val artiSearches = artiRe.findAll(response)
+        artiSearches.forEach {
+            println(it.value)
+            artiList.add( processReStr(it.value) )
+        }
+
+        val dateRe = "\"release_date_for_display\"(.*?)(\",|null,)".toRegex()  //
+        val dateSearches = dateRe.findAll(response)
+        dateSearches.forEach {
+            println(it.value)
+            dateList.add( processReStr(it.value) )
+        }
+
+        for ( i in pathList.indices ) {
+
+            val count = (i+1).toString()
+            val artist = artiList[i]
+            val songTitle = titleList[i]
+            val songLink = pathList[i]
+            val releaseDate = dateList[i]
+
+            elementList = arrayOf(count, songTitle, artist, releaseDate, songLink)
             infoList.add(elementList)
         }
         return infoList
     }
 
-    fun replaceKanji(kanjiString: String) : String {
-        var kanjiLiteral = kanjiString
+    fun scrapeLyrics(songRelativeLink: String) : Array<Any> {
+        val songLink = "${searchEngine}${songRelativeLink}"    //
+        println(songLink)
+        val response = getHttpsResponse(songLink, client_access_token)  // html text
+            .replace("<br/>", "$-")
+        val document = Jsoup.parse(response)
 
-        val kanjiVariants = ArrayList<Array<String>>()
-        kanjiVariants.add(arrayOf("線", "綫") )
-        kanjiVariants.add(arrayOf("啟", "啓") )
-        kanjiVariants.add(arrayOf("躲", "躱") )
-        kanjiVariants.add(arrayOf("裡", "裏") )
-        kanjiVariants.add(arrayOf("為", "爲") )
-        kanjiVariants.add(arrayOf("真", "眞") )
+        title = document.getElementsByTag("h2").text().dropLast(7)
+        println(title)
 
-        // replace the kanji variants
-        for (i in kanjiVariants.indices ) {
-            kanjiLiteral = kanjiLiteral.replace( kanjiVariants[i][0],kanjiVariants[i][1] )
-        }
-        return kanjiLiteral
-    }
+        val kashi = document.select("div[class*=Lyrics__Container]").text()
+            .replace("$-", "\n")
+        println(kashi)
 
-    fun replaceMetaData(kanjiString: String) : String {
-        var kanjiLiteral = kanjiString
+        val about = document.select("div[class*=SongDescription__Content]").text()
+            .replace("$-", "\n")
+        println(about)
+        val credits = document.select("div[class*=SongInfo__Columns]").text()
+            .replace("$-", "\n")
+        println(credits)
 
-        val kanjiVariants = ArrayList<Array<String>>()
-        kanjiVariants.add(arrayOf("作詞：", "Lyrics by ") )
-        kanjiVariants.add(arrayOf("作曲：", "Composed by ") )
-        kanjiVariants.add(arrayOf("編曲：", "Arranged by ") )
-        kanjiVariants.add(arrayOf("監製：", "Produced by ") )
-        kanjiVariants.add(arrayOf("演唱：", "Performed by ") )
 
-        kanjiVariants.add(arrayOf("&lt;", "「") )
-        kanjiVariants.add(arrayOf("2&gt;", "」") )
+        Log.v("Genius Scrap", title )
 
-        // replace the kanji variants
-        for (i in kanjiVariants.indices ) {
-            kanjiLiteral = kanjiLiteral.replace( kanjiVariants[i][0],kanjiVariants[i][1] )
-        }
-        return kanjiLiteral
-    }
+        number = songRelativeLink.split('.')[0].drop(4)
 
-    fun scrapLyrics(songRelativeLink: String) : Array<Any> {
-
-        val songLink = "${searchEngine}${songRelativeLink}"    // https://mojim.com/twy100019x21x8.htm
-        Log.v("Chinese Link", songLink)
-        val document = Jsoup.connect(songLink).get()
-
-        title = document.getElementsByTag("title").first()!!.text().split(" 歌詞")[0]
-        val kashi = document.getElementById("fsZx1")
-
-        val graphicSpace = "\u3000"
-        val ad0 = "<br>更多更詳盡歌詞 在 ※ Mojim.com 魔鏡歌詞網"    // more lyrics at Mojim.com
-        val ad1 = """\u66F4\u591A\u66F4\u8A73\u76E1\u6B4C\u8A5E \u5728 <a href="http://mojim.com">\u203B Mojim.com\u3000\u9B54\u93E1\u6B4C\u8A5E\u7DB2 </a><br/>"""   // more lyrics at Mojim.com
-
-        val ad3 = "<dl.*> ".toRegex()
-        val ad4 = "<dt.*</dt>".toRegex()
-        val ad5 = "<ol>.*</dl>".toRegex()
-
-        var temp = kashi.toString()
-//            .replace(" ", "")
-            .replace("\n", " ")
-            .replace(graphicSpace, " ")
-            .replace(ad0, "")
-            .replace("<br>", "\n")
-
-        for (i in 1..5) {
-            temp = temp.replace(" \n", "\n")  // remove right space
-                .replace("\n ", "\n") // remove left space
-        }
-
-        for (item in listOf(ad3, ad4, ad5) ){
-            temp = item.replace(temp, "")
-        }
-        temp = replaceKanji(temp)
-        temp = replaceMetaData(temp)
-
-        Log.v("Chinese Scrap", title )
-        Log.v("Chinese Scrap", temp )
-
-        number      = songRelativeLink.split('.')[0].drop(4)
-
-        return arrayOf( title, "${lyrics}${temp}", singers, lyricists, composers, releaseDate, number, studio )
+        return arrayOf( title, "${lyrics}${kashi}\n\n\n${about}\n\n\n${credits}", singers, lyricists, composers, releaseDate, number, studio )
     }
 }
 
+// ------------------------
+fun getHttpsResponse(queryURL: String, token: String): String {
+    val url = URL(queryURL)
+    val connection = url.openConnection()
+    connection.setRequestProperty("Authorization", "Bearer ${token}")
 
+    val response = StringBuffer()
+    BufferedReader(
+        InputStreamReader(connection.getInputStream())
+    ).use {
+        var inputLine = it.readLine()
+        while (inputLine != null) {
+            response.append(inputLine)
+            inputLine = it.readLine()
+        }
+        it.close()
+    }
+
+    return response.toString()
+}
 // https://stackoverflow.com/questions/58247830/how-to-store-2d-array-in-android-shared-preference-in-kotlin
