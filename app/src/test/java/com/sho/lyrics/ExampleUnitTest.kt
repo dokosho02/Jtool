@@ -1,4 +1,4 @@
-package com.example.jtool
+package com.sho.lyrics
 
 import org.junit.Test
 

@@ -6,9 +6,9 @@ a simple lyrics scrapping app for Android platform
 
 ### Websites supported
 
-- [Mojim](http://mojim.com/twzlistF.htm) (traditional Chinese character only)
 - [Uta-Net](https://www.uta-net.com/) (Japanese)
 - [Genius](https://genius.com/) (Western world - English, ...)
+- [Mojim](http://mojim.com/twzlistF.htm) (traditional Chinese character only)
 
 ## Download
 
@@ -25,3 +25,4 @@ for `.apk` file download, please go to [Release Page](https://github.com/dokosho
 
 - [x] Genius supported (2022-08-11, v1.2.0)
 - [x] Uta-Net loses `searchSongs` function (2022-06-30 - 2022-08-11, v1.1.7)
+- [ ] Mojim website cannot work... (2024-07-22, v1.3.0)
